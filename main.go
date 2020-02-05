@@ -67,7 +67,10 @@ func collapseNums4(nums [][]int, output *[]int) [][]int {
 		return nums
 	} else if nums[0][0] == nums[1][0] {
 		//add a zero to final
-		*output = append((*output), 0)
+		//*output = append((*output), 0)
+
+		//prepend
+		*output = append([]int{0}, (*output)...)
 
 		//copy to new var
 		a := nums
@@ -83,31 +86,167 @@ func collapseNums4(nums [][]int, output *[]int) [][]int {
 		//fmt.Println("b : ", b)
 
 		return collapseNums4(b, output)
-	} else if nums[0][0] != 0 && nums[1][0] == 0 { // need to check if next val is a zero, and swap
+		// } else if nums[0][0] != 0 && nums[1][0] == 0 { // need to check if next val is a zero, and swap
+		// 	// swap them
+		// 	tmp := nums[0]
+		// 	nums[0] = nums[1]
+		// 	nums[1] = tmp
+		// 	// call func
+		// 	//*output = append((*output), 0)
+
+		// return append(collapseNums4(nums[0:1], output), collapseNums4(nums[1:], output)...)
+		// 	return collapseNums4(nums, output)
+
+	} else {
+		if nums[0][0] != 0 && nums[1][0] == 0 { // need to check if next val is a zero, and swap
+
+			//replace the zero
+			nums[1] = nums[0]
+
+			//prepend to output the zero
+			*output = append([]int{0}, (*output)...)
+
+			// // swap them
+			// tmp := nums[0]
+			// nums[0] = nums[1]
+			// nums[1] = tmp
+			return (collapseNums4(nums[1:], output))
+
+		}
+		return append(collapseNums4(nums[0:1], output), collapseNums4(nums[1:], output)...)
+	}
+}
+
+func collapseNums6(nums [][]int, output *[]int) [][]int {
+	// base case, only one number left
+	if len(nums) == 1 {
+		if nums[0][0] == 0 {
+			return make([][]int, 0)
+		}
+		return nums
+	} else if nums[0][0] == nums[1][0] {
+		//add a zero to final
+		//*output = append((*output), 0)
+
+		//prepend
+		*output = append([]int{0}, (*output)...)
+
+		//copy to new var
+		a := nums
+		//fmt.Println("a: ", a)
+		// add value to inner slice
+		//fmt.Println("a1 before: ", a[1])
+		a[1] = append(a[1], a[0][0:]...)
+		//fmt.Println("a1 after: ", a[1])
+		// cocatonate into new slice, removing the second entry
+		//var b [][]int
+
+		b := append(a[1:2], a[2:]...)
+		//fmt.Println("b : ", b)
+
+		return collapseNums4(b, output)
+		// } else if nums[0][0] != 0 && nums[1][0] == 0 { // need to check if next val is a zero, and swap
+		// 	// swap them
+		// 	tmp := nums[0]
+		// 	nums[0] = nums[1]
+		// 	nums[1] = tmp
+		// 	// call func
+		// 	//*output = append((*output), 0)
+
+		// return append(collapseNums4(nums[0:1], output), collapseNums4(nums[1:], output)...)
+		// 	return collapseNums4(nums, output)
+
+	} else {
+		if nums[0][0] != 0 && nums[1][0] == 0 { // need to check if next val is a zero, and swap
+
+			//replace the zero
+			//nums[1] = nums[0]
+
+			//prepend to output the zero
+			//*output = append([]int{0}, (*output)...)
+
+			// swap them
+			tmp := nums[0]
+			nums[0] = nums[1]
+			nums[1] = tmp
+			//return (collapseNums4(nums[1:], output))
+
+		}
+		return append(collapseNums4(nums[0:1], output), collapseNums4(nums[1:], output)...)
+	}
+}
+
+func collapseNums5(nums [][]int, output *[]int) [][]int {
+	// base case, only one number left
+	if len(nums) == 1 {
+		return nums
+	} else if nums[0][0] == nums[1][0] {
+		//add a zero to final
+		*output = append((*output), 0)
+
+		//copy to new var
+		a := nums
+		//fmt.Println("a: ", a)
+		// add value to inner slice
+		//fmt.Println("a1 before: ", a[1])
+
+		a[0] = append(a[0], a[1][0:]...)
+		//fmt.Println("a1 after: ", a[1])
+		// cocatonate into new slice, removing the second entry
+		//var b [][]int
+
+		// cut out a[1]
+		b := append(a[0:1], a[2:]...)
+		//fmt.Println("b : ", b)
+
+		return collapseNums4(b, output)
+	} else if nums[0][0] == 0 && nums[1][0] != 0 { // need to check if next val is a zero, and swap
 		// swap them
-		tmp := nums[0]
+		tmp := nums[1]
 		nums[0] = nums[1]
 		nums[1] = tmp
 		// call func
-		return append(collapseNums4(nums[0:1], output), collapseNums4(nums[1:], output)...)
+		return collapseNums4(nums, output)
+		//return append(collapseNums4(nums[0:1], output), collapseNums4(nums[1:], output)...)
 	} else {
 		return append(collapseNums4(nums[0:1], output), collapseNums4(nums[1:], output)...)
 	}
 }
 
-func processRow(rowVals []int) []string {
+func preprocess(vals []int) []int {
+	//zeros := make([]int,0)
+	toReturn := make([]int, 0)
+	for _, v := range vals {
+		if v == 0 {
+			toReturn = append([]int{v}, toReturn...)
+		} else {
+			toReturn = append(toReturn, v)
+		}
+
+	}
+	return toReturn
+}
+
+// recursive swap
+
+func processRow(rowVals []int) []int {
 	// make the 2D holder
 	toCollapse := make([][]int, 4)
+
+	// preprocess to move all zeros
+	// rowVals = preprocess(rowVals)
+	// fmt.Println("rowvalse preprocess: ", rowVals)
+
 	for i, v := range rowVals {
 		toCollapse[i] = []int{v}
 	}
 
 	final := make([]int, 0)
-	a := make([]int, 0)
-	toReturn := make([]string, 0)
+	toReturn := make([]int, 0)
+	//toReturn := make([]string, 0)
 
 	//fmt.Println("tocolaps: ", toCollapse)
-	j := collapseNums4(toCollapse, &a)
+	j := collapseNums6(toCollapse, &toReturn)
 	//fmt.Println("j: ", j)
 
 	for _, v := range j {
@@ -120,11 +259,11 @@ func processRow(rowVals []int) []string {
 	}
 
 	fmt.Println("final: ", final)
-	a = append(a, final...)
+	toReturn = append(toReturn, final...)
 
-	for i := 0; i < len(a); i++ {
-		toReturn = append(toReturn, strconv.Itoa(a[i]))
-	}
+	// for i := 0; i < len(a); i++ {
+	// 	toReturn = append(toReturn, strconv.Itoa(a[i]))
+	// }
 	//toReturn = append(toReturn, strconv.Itoa(a))
 
 	fmt.Println("toReturn: ", toReturn)
@@ -236,6 +375,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// 	fmt.Printf("type: %T", reqBody.Get("values"))
 
 		// }
+
+		fmt.Println("direction: ", reqBod.Direction)
 		if reqBod.Direction == "right" {
 
 			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
@@ -247,7 +388,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 			fmt.Println("newboard: ", newBoard)
 
-			responseArray := make([]string, 0)
+			responseArray := make([]int, 0)
 			// call slide right function
 			fmt.Println("newboard before: ", newBoard)
 			for _, v := range newBoard {
@@ -263,8 +404,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			// respBod := &responseBody{
 			// 	NewBoard: newBoard,
 			// }
+			//test := []int{1, 2, 3, 4, 5, 5, 6, 7, 8}
 
 			//marshal into JSON
+			//respBod, err := json.Marshal(responseArray)
 			respBod, err := json.Marshal(responseArray)
 
 			fmt.Println("respBod: ", string(respBod))
@@ -283,6 +426,216 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			// Write response
 
 		}
+
+		if reqBod.Direction == "up" {
+
+			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
+			fmt.Println("direction: ", reqBod.Direction)
+			fmt.Println("values: ", reqBod.Values)
+
+			// build back up the board and thenn call the slide tiles function
+			newBoard := reconstructBoard(reqBod.Values)
+
+			//call rotate
+			fmt.Println("board before Clockwise rotations: ", newBoard)
+			rotateClockwise(&newBoard)
+
+			fmt.Println("Clockwise rotated board: ", newBoard)
+
+			responseArray := make([]int, 0)
+			// call slide right function
+			//fmt.Println("newboard before: ", newBoard)
+
+			for i, v := range newBoard {
+				newBoard[i] = processRow(v)
+				//responseArray = append(responseArray, newBoard[i]...)
+			}
+			fmt.Println("before counter rotated board: ", newBoard)
+			rotateCounterClockwise(&newBoard)
+			fmt.Println("after counter rotation: ", newBoard)
+
+			for i := range newBoard {
+				//newBoard[i] = processRow(v)
+				responseArray = append(responseArray, newBoard[i]...)
+			}
+
+			// rotate back
+			//rotateCounterClockwise(&newBoard)
+
+			fmt.Println(responseArray)
+
+			// convert back to string
+
+			//fmt.Printf("%T", responseArray)
+
+			//fmt.Println("newboard after: ", responseArray)
+
+			// respBod := &responseBody{
+			// 	NewBoard: newBoard,
+			// }
+			//test := []int{1, 2, 3, 4, 5, 5, 6, 7, 8}
+
+			//marshal into JSON
+			//respBod, err := json.Marshal(responseArray)
+			respBod, err := json.Marshal(responseArray)
+
+			fmt.Println("respBod: ", string(respBod))
+
+			if err != nil {
+				fmt.Println("error in json marshall")
+			}
+			//fmt.Println("response: ", respBod2)
+			//add to response body
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, string(respBod))
+
+			// send values back to ajax
+
+			// Write response
+
+		}
+
+		if reqBod.Direction == "down" {
+
+			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
+			fmt.Println("direction: ", reqBod.Direction)
+			fmt.Println("values: ", reqBod.Values)
+
+			// build back up the board and thenn call the slide tiles function
+			newBoard := reconstructBoard(reqBod.Values)
+
+			//call rotate
+			fmt.Println("board before rotations: ", newBoard)
+			rotateCounterClockwise(&newBoard)
+
+			fmt.Println("CounterClockwise rotated board: ", newBoard)
+
+			responseArray := make([]int, 0)
+			// call slide right function
+			//fmt.Println("newboard before: ", newBoard)
+
+			for i, v := range newBoard {
+				newBoard[i] = processRow(v)
+				//responseArray = append(responseArray, newBoard[i]...)
+			}
+			fmt.Println("before counter rotated board: ", newBoard)
+			rotateClockwise(&newBoard)
+			fmt.Println("after counter rotation: ", newBoard)
+
+			for i := range newBoard {
+				//newBoard[i] = processRow(v)
+				responseArray = append(responseArray, newBoard[i]...)
+			}
+
+			// rotate back
+			//rotateCounterClockwise(&newBoard)
+
+			fmt.Println(responseArray)
+
+			// convert back to string
+
+			//fmt.Printf("%T", responseArray)
+
+			//fmt.Println("newboard after: ", responseArray)
+
+			// respBod := &responseBody{
+			// 	NewBoard: newBoard,
+			// }
+			//test := []int{1, 2, 3, 4, 5, 5, 6, 7, 8}
+
+			//marshal into JSON
+			//respBod, err := json.Marshal(responseArray)
+			respBod, err := json.Marshal(responseArray)
+
+			fmt.Println("respBod: ", string(respBod))
+
+			if err != nil {
+				fmt.Println("error in json marshall")
+			}
+			//fmt.Println("response: ", respBod2)
+			//add to response body
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, string(respBod))
+
+			// send values back to ajax
+
+			// Write response
+
+		}
+		if reqBod.Direction == "left" {
+
+			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
+			fmt.Println("direction: ", reqBod.Direction)
+			fmt.Println("values: ", reqBod.Values)
+
+			// build back up the board and thenn call the slide tiles function
+			newBoard := reconstructBoard(reqBod.Values)
+
+			//call rotate
+			fmt.Println("board before rotations: ", newBoard)
+			rotateCounterClockwise(&newBoard)
+			rotateCounterClockwise(&newBoard)
+
+			fmt.Println("CounterClockwise rotated board: ", newBoard)
+
+			responseArray := make([]int, 0)
+			// call slide right function
+			//fmt.Println("newboard before: ", newBoard)
+
+			for i, v := range newBoard {
+				newBoard[i] = processRow(v)
+				//responseArray = append(responseArray, newBoard[i]...)
+			}
+			fmt.Println("before counter rotated board: ", newBoard)
+			rotateClockwise(&newBoard)
+			rotateClockwise(&newBoard)
+
+			fmt.Println("after counter rotation: ", newBoard)
+
+			for i := range newBoard {
+				//newBoard[i] = processRow(v)
+				responseArray = append(responseArray, newBoard[i]...)
+			}
+
+			// rotate back
+			//rotateCounterClockwise(&newBoard)
+
+			fmt.Println(responseArray)
+
+			// convert back to string
+
+			//fmt.Printf("%T", responseArray)
+
+			//fmt.Println("newboard after: ", responseArray)
+
+			// respBod := &responseBody{
+			// 	NewBoard: newBoard,
+			// }
+			//test := []int{1, 2, 3, 4, 5, 5, 6, 7, 8}
+
+			//marshal into JSON
+			//respBod, err := json.Marshal(responseArray)
+			respBod, err := json.Marshal(responseArray)
+
+			fmt.Println("respBod: ", string(respBod))
+
+			if err != nil {
+				fmt.Println("error in json marshall")
+			}
+			//fmt.Println("response: ", respBod2)
+			//add to response body
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, string(respBod))
+
+			// send values back to ajax
+
+			// Write response
+
+		}
+
 		//fmt.Println(reqBody)
 		// do something
 	}
@@ -333,6 +686,72 @@ func makeNewBoard() [][]int {
 	}
 	fmt.Println("borad", board)
 	return board
+}
+
+// this function will rotate the matrix by 90
+func rotateClockwise(values *[][]int) {
+	//toReturn := make([]int, 0)
+	l := len(*values)
+	fmt.Println("len: ", l)
+	for i := 0; i < (l / 2); i++ {
+		for j := i; j < (l - i - 1); j++ {
+			tmp := (*values)[i][j]
+
+			//[0][0] = [3][0]
+			(*values)[i][j] = (*values)[l-1-j][i]
+
+			//change [3][0] = [3][3]
+			(*values)[l-1-j][i] = (*values)[l-1-i][l-1-j]
+
+			// [3][3] = [0][3]
+			(*values)[l-1-i][l-1-j] = (*values)[j][l-1-i]
+
+			// [0][3] = tmp
+			(*values)[j][l-1-i] = tmp
+
+			// (*values)[l-1-i][l-1-j] =
+
+			// (*values)[l-1-j][i] = tmp
+
+		}
+	}
+}
+
+// this function will rotate the matrix by 90
+func rotateCounterClockwise(values *[][]int) {
+	//toReturn := make([]int, 0)
+	l := len(*values)
+	fmt.Println("len: ", l)
+	for i := 0; i < (l / 2); i++ {
+		for j := i; j < (l - i - 1); j++ {
+			tmp := (*values)[i][j]
+
+			(*values)[i][j] = (*values)[j][l-1-i]
+
+			(*values)[j][l-1-i] = (*values)[l-1-i][l-1-j]
+
+			(*values)[l-1-i][l-1-j] = (*values)[l-1-j][i]
+
+			(*values)[l-1-j][i] = tmp
+
+			// //[0][0] = [3][0]
+			// (*values)[i][j] = (*values)[l-1-j][i]
+
+			// //change [3][0] = [3][3]
+			// (*values)[l-1-j][i] = (*values)[l-1-i][l-1-j]
+
+			// // [3][3] = [0][3]
+			// (*values)[l-1-i][l-1-j] = (*values)[j][l-1-i]
+
+			// // [0][3] = tmp
+			// (*values)[j][l-1-i] = tmp
+
+			// (*values)[l-1-i][l-1-j] =
+
+			// (*values)[l-1-j][i] = tmp
+
+		}
+	}
 }
 
 func main() {
