@@ -377,29 +377,34 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// }
 
 		fmt.Println("direction: ", reqBod.Direction)
+		newBoard := reconstructBoard(reqBod.Values)
+		responseArray := make([]int, 0)
+
 		if reqBod.Direction == "right" {
 
 			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
-			fmt.Println("direction: ", reqBod.Direction)
-			fmt.Println("values: ", reqBod.Values)
+			// fmt.Println("direction: ", reqBod.Direction)
+			// fmt.Println("values: ", reqBod.Values)
 
 			// build back up the board and thenn call the slide tiles function
-			newBoard := reconstructBoard(reqBod.Values)
+			//newBoard := reconstructBoard(reqBod.Values)
 
-			fmt.Println("newboard: ", newBoard)
+			//fmt.Println("newboard: ", newBoard)
 
-			responseArray := make([]int, 0)
+			//responseArray := make([]int, 0)
 			// call slide right function
 			fmt.Println("newboard before: ", newBoard)
-			for _, v := range newBoard {
-				responseArray = append(responseArray, processRow(v)...)
-			}
+
+			processBoard(&newBoard)
+			// for _, v := range newBoard {
+			// 	responseArray = append(responseArray, processRow(v)...)
+			// }
 
 			// convert back to string
 
-			fmt.Printf("%T", responseArray)
+			//fmt.Printf("%T", responseArray)
 
-			fmt.Println("newboard after: ", responseArray)
+			//fmt.Println("newboard after: ", responseArray)
 
 			// respBod := &responseBody{
 			// 	NewBoard: newBoard,
@@ -408,18 +413,18 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 			//marshal into JSON
 			//respBod, err := json.Marshal(responseArray)
-			respBod, err := json.Marshal(responseArray)
+			//respBod, err := json.Marshal(responseArray)
 
-			fmt.Println("respBod: ", string(respBod))
+			//fmt.Println("respBod: ", string(respBod))
 
-			if err != nil {
-				fmt.Println("error in json marshall")
-			}
+			// if err != nil {
+			// 	fmt.Println("error in json marshall")
+			// }
 			//fmt.Println("response: ", respBod2)
 			//add to response body
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, string(respBod))
+			// w.Header().Set("Content-Type", "application/json")
+			// w.WriteHeader(http.StatusOK)
+			// fmt.Fprint(w, string(respBod))
 
 			// send values back to ajax
 
@@ -430,39 +435,40 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		if reqBod.Direction == "up" {
 
 			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
-			fmt.Println("direction: ", reqBod.Direction)
-			fmt.Println("values: ", reqBod.Values)
+			// fmt.Println("direction: ", reqBod.Direction)
+			// fmt.Println("values: ", reqBod.Values)
 
 			// build back up the board and thenn call the slide tiles function
-			newBoard := reconstructBoard(reqBod.Values)
+			//newBoard := reconstructBoard(reqBod.Values)
 
 			//call rotate
-			fmt.Println("board before Clockwise rotations: ", newBoard)
+			//fmt.Println("board before Clockwise rotations: ", newBoard)
 			rotateClockwise(&newBoard)
 
-			fmt.Println("Clockwise rotated board: ", newBoard)
+			// fmt.Println("Clockwise rotated board: ", newBoard)
 
-			responseArray := make([]int, 0)
+			// responseArray := make([]int, 0)
 			// call slide right function
 			//fmt.Println("newboard before: ", newBoard)
+			processBoard(&newBoard)
 
-			for i, v := range newBoard {
-				newBoard[i] = processRow(v)
-				//responseArray = append(responseArray, newBoard[i]...)
-			}
-			fmt.Println("before counter rotated board: ", newBoard)
+			// for i, v := range newBoard {
+			// 	newBoard[i] = processRow(v)
+			// 	//responseArray = append(responseArray, newBoard[i]...)
+			// }
+			//fmt.Println("before counter rotated board: ", newBoard)
 			rotateCounterClockwise(&newBoard)
 			fmt.Println("after counter rotation: ", newBoard)
 
-			for i := range newBoard {
-				//newBoard[i] = processRow(v)
-				responseArray = append(responseArray, newBoard[i]...)
-			}
+			// for i := range newBoard {
+			// 	//newBoard[i] = processRow(v)
+			// 	responseArray = append(responseArray, newBoard[i]...)
+			// }
 
 			// rotate back
 			//rotateCounterClockwise(&newBoard)
 
-			fmt.Println(responseArray)
+			//fmt.Println(responseArray)
 
 			// convert back to string
 
@@ -477,61 +483,63 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 			//marshal into JSON
 			//respBod, err := json.Marshal(responseArray)
-			respBod, err := json.Marshal(responseArray)
+			// respBod, err := json.Marshal(responseArray)
 
-			fmt.Println("respBod: ", string(respBod))
+			// fmt.Println("respBod: ", string(respBod))
 
-			if err != nil {
-				fmt.Println("error in json marshall")
-			}
-			//fmt.Println("response: ", respBod2)
-			//add to response body
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, string(respBod))
+			// if err != nil {
+			// 	fmt.Println("error in json marshall")
+			// }
+			// //fmt.Println("response: ", respBod2)
+			// //add to response body
+			// w.Header().Set("Content-Type", "application/json")
+			// w.WriteHeader(http.StatusOK)
+			// fmt.Fprint(w, string(respBod))
 
-			// send values back to ajax
+			// // send values back to ajax
 
-			// Write response
+			// // Write response
 
 		}
 
 		if reqBod.Direction == "down" {
 
 			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
-			fmt.Println("direction: ", reqBod.Direction)
-			fmt.Println("values: ", reqBod.Values)
+			// fmt.Println("direction: ", reqBod.Direction)
+			// fmt.Println("values: ", reqBod.Values)
 
 			// build back up the board and thenn call the slide tiles function
-			newBoard := reconstructBoard(reqBod.Values)
+			//newBoard := reconstructBoard(reqBod.Values)
 
 			//call rotate
-			fmt.Println("board before rotations: ", newBoard)
+			//fmt.Println("board before rotations: ", newBoard)
 			rotateCounterClockwise(&newBoard)
 
-			fmt.Println("CounterClockwise rotated board: ", newBoard)
+			//fmt.Println("CounterClockwise rotated board: ", newBoard)
 
-			responseArray := make([]int, 0)
+			//responseArray := make([]int, 0)
 			// call slide right function
 			//fmt.Println("newboard before: ", newBoard)
 
-			for i, v := range newBoard {
-				newBoard[i] = processRow(v)
-				//responseArray = append(responseArray, newBoard[i]...)
-			}
-			fmt.Println("before counter rotated board: ", newBoard)
+			processBoard(&newBoard)
+
+			// for i, v := range newBoard {
+			// 	newBoard[i] = processRow(v)
+			// 	//responseArray = append(responseArray, newBoard[i]...)
+			// }
+			// fmt.Println("before counter rotated board: ", newBoard)
 			rotateClockwise(&newBoard)
 			fmt.Println("after counter rotation: ", newBoard)
 
-			for i := range newBoard {
-				//newBoard[i] = processRow(v)
-				responseArray = append(responseArray, newBoard[i]...)
-			}
+			// for i := range newBoard {
+			// 	//newBoard[i] = processRow(v)
+			// 	responseArray = append(responseArray, newBoard[i]...)
+			// }
 
 			// rotate back
 			//rotateCounterClockwise(&newBoard)
 
-			fmt.Println(responseArray)
+			//fmt.Println(responseArray)
 
 			// convert back to string
 
@@ -546,63 +554,56 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 			//marshal into JSON
 			//respBod, err := json.Marshal(responseArray)
-			respBod, err := json.Marshal(responseArray)
+			// respBod, err := json.Marshal(responseArray)
 
-			fmt.Println("respBod: ", string(respBod))
+			// fmt.Println("respBod: ", string(respBod))
 
-			if err != nil {
-				fmt.Println("error in json marshall")
-			}
-			//fmt.Println("response: ", respBod2)
-			//add to response body
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, string(respBod))
+			// if err != nil {
+			// 	fmt.Println("error in json marshall")
+			// }
+			// //fmt.Println("response: ", respBod2)
+			// //add to response body
+			// w.Header().Set("Content-Type", "application/json")
+			// w.WriteHeader(http.StatusOK)
+			// fmt.Fprint(w, string(respBod))
 
 			// send values back to ajax
 
 			// Write response
 
 		}
+
 		if reqBod.Direction == "left" {
 
 			// fmt.Println("in the post, driection: ", reqBody.Get("direction"))
-			fmt.Println("direction: ", reqBod.Direction)
-			fmt.Println("values: ", reqBod.Values)
+			//fmt.Println("direction: ", reqBod.Direction)
+			//fmt.Println("values: ", reqBod.Values)
 
 			// build back up the board and thenn call the slide tiles function
-			newBoard := reconstructBoard(reqBod.Values)
 
 			//call rotate
-			fmt.Println("board before rotations: ", newBoard)
+			//fmt.Println("board before rotations: ", newBoard)
 			rotateCounterClockwise(&newBoard)
 			rotateCounterClockwise(&newBoard)
 
-			fmt.Println("CounterClockwise rotated board: ", newBoard)
+			//fmt.Println("CounterClockwise rotated board: ", newBoard)
 
-			responseArray := make([]int, 0)
 			// call slide right function
 			//fmt.Println("newboard before: ", newBoard)
 
-			for i, v := range newBoard {
-				newBoard[i] = processRow(v)
-				//responseArray = append(responseArray, newBoard[i]...)
-			}
+			//Process the board
+			processBoard(&newBoard)
+
 			fmt.Println("before counter rotated board: ", newBoard)
 			rotateClockwise(&newBoard)
 			rotateClockwise(&newBoard)
 
 			fmt.Println("after counter rotation: ", newBoard)
 
-			for i := range newBoard {
-				//newBoard[i] = processRow(v)
-				responseArray = append(responseArray, newBoard[i]...)
-			}
-
 			// rotate back
 			//rotateCounterClockwise(&newBoard)
 
-			fmt.Println(responseArray)
+			//fmt.Println(responseArray)
 
 			// convert back to string
 
@@ -617,27 +618,40 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 			//marshal into JSON
 			//respBod, err := json.Marshal(responseArray)
-			respBod, err := json.Marshal(responseArray)
-
-			fmt.Println("respBod: ", string(respBod))
-
-			if err != nil {
-				fmt.Println("error in json marshall")
-			}
-			//fmt.Println("response: ", respBod2)
-			//add to response body
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			fmt.Fprint(w, string(respBod))
 
 			// send values back to ajax
 
 			// Write response
-
 		}
+
+		for i := range newBoard {
+			//newBoard[i] = processRow(v)
+			responseArray = append(responseArray, newBoard[i]...)
+		}
+
+		respBod, err := json.Marshal(responseArray)
+
+		fmt.Println("respBod: ", string(respBod))
+
+		if err != nil {
+			fmt.Println("error in json marshall")
+		}
+		//fmt.Println("response: ", respBod2)
+		//add to response body
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, string(respBod))
 
 		//fmt.Println(reqBody)
 		// do something
+	}
+
+}
+
+func processBoard(board *[][]int) {
+	for i, v := range *board {
+		(*board)[i] = processRow(v)
+		//responseArray = append(responseArray, newBoard[i]...)
 	}
 
 }
@@ -760,7 +774,7 @@ func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	// make an empty matrix
-	board := makeNewBoard()
+	//board := makeNewBoard()
 
 	// b := []int{2, 3, 2, 3}
 	// a = append(a, collapseNums3(b, &a)...)
@@ -782,9 +796,9 @@ func main() {
 
 	//var m = []int{2, 2, 3, 3}
 
-	for _, v := range board {
-		processRow(v)
-	}
+	// for _, v := range board {
+	// 	processRow(v)
+	// }
 
 	// server stuff
 	// d := dataToServe{
