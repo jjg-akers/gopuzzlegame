@@ -96,20 +96,6 @@ func collapseNums6(nums [][]int, output *[]int) [][]int {
 	}
 }
 
-func preprocess(vals []int) []int {
-	//zeros := make([]int,0)
-	toReturn := make([]int, 0)
-	for _, v := range vals {
-		if v == 0 {
-			toReturn = append([]int{v}, toReturn...)
-		} else {
-			toReturn = append(toReturn, v)
-		}
-
-	}
-	return toReturn
-}
-
 // This function will take in a row of values and run them through the collapse
 //	function
 func processRow(rowVals []int) []int {
@@ -206,7 +192,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			panic(err)
 		}
 
-		log.Println("direction: ", reqBod.Direction)
+		//log.Println("direction: ", reqBod.Direction)
 
 		// reconstruct the board
 		newBoard := reconstructBoard(reqBod.Values)
@@ -282,7 +268,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// convet to JSON
 		respBod, err := json.Marshal(responseArray)
 
-		log.Println("respBod: ", string(respBod))
+		//log.Println("respBod: ", string(respBod))
 
 		// TODO Handle error
 		if err != nil {
@@ -340,7 +326,7 @@ func makeNewBoard() [][]int {
 func rotateClockwise(values *[][]int) {
 	//toReturn := make([]int, 0)
 	l := len(*values)
-	fmt.Println("len: ", l)
+	//fmt.Println("len: ", l)
 	for i := 0; i < (l / 2); i++ {
 		for j := i; j < (l - i - 1); j++ {
 			tmp := (*values)[i][j]
@@ -369,7 +355,7 @@ func rotateClockwise(values *[][]int) {
 func rotateCounterClockwise(values *[][]int) {
 	//toReturn := make([]int, 0)
 	l := len(*values)
-	fmt.Println("len: ", l)
+	//fmt.Println("len: ", l)
 	for i := 0; i < (l / 2); i++ {
 		for j := i; j < (l - i - 1); j++ {
 			tmp := (*values)[i][j]
