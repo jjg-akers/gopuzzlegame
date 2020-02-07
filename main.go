@@ -15,6 +15,9 @@ type board struct {
 	values [][]int
 }
 
+//Make Gloabal varaiable of type board to save games into
+var globalBoard board
+
 func collapseNums(nums []int) []int {
 	// base case, only one number left
 	if len(nums) == 1 {
@@ -327,27 +330,33 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		newGame := req.URL.Query()
 		//fmt.Println(newGame)
 
-		//fmt.Println("get: ", newGame.Get("newgame"))
+		// If new game was selected, build a new board and then redirect to
+		// home page
 		if newGame.Get("newgame") == "New Game" {
-			//fmt.Println("inNew game")
-			//make new board and execute template
+
+			//make new board
 			newBoard := makeNewBoard()
 
-			// write response
-			w.Header().Set("New Game", "True")
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			w.WriteHeader(200)
+			//assign globalBoard
+			globalBoard.values = newBoard
 
-			// execute template with new board setup
-			tpl.ExecuteTemplate(w, "index.html", newBoard)
-			return
+			// Redirect
+			http.Redirect(w, req, "/", http.StatusTemporaryRedirect)
+			//return
 		} else {
-			// do nothing
+			// if this is the first time visiting the page, make a new board
+			if globalBoard.values == nil {
+				globalBoard.values = makeNewBoard()
+			}
+
+			// If the page is just refreshed or redirected from newGame,
+			//	serve the existing board
 			w.Header().Set("New Game", "False")
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.WriteHeader(200)
-			return
+			tpl.ExecuteTemplate(w, "index.html", globalBoard.values)
 		}
+		return
 	}
 
 	// POST will be used when the client slides the board pieces
@@ -623,6 +632,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 
 			// Write response
 		}
+
+		//assign globalBoard so it can be reserved if page is refreshed
+		globalBoard.values = newBoard
 
 		for i := range newBoard {
 			//newBoard[i] = processRow(v)
