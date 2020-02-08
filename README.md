@@ -24,7 +24,7 @@ This message shows that your installation appears to be working correctly.
 ...
 ```
 
-Next, pull the image for dockerhub:
+Next, pull the image from dockerhub:
 
 ```
 $ docker pull jakers85/goprojects:puzzlegame
